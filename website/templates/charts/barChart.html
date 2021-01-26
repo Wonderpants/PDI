@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>{% block title %}{{ title }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-9">
+            <div class="chart-container" style="position: relative;">
+                <canvas id="chartID"></canvas>
+            </div>
+            <label for="customRange2"></label>
+            <input type="range" class="custom-range" id="customRange2" value="0" max="{{ chartData['labels']|length }}">
+        </div>
+        <div class="col-sm-3">
+            <label for="customRange1">Número de {{ tipo }} (<span id="count">{{ chartData['labels']|length }}</span>/{{ chartData['labels']|length }})</label>
+            <input type="range" class="custom-range" id="customRange1" value="5" max="{{ chartData['labels']|length }}" min="5">
+            <div class="pt-4">{{ description }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        let slider = document.getElementById("customRange1");
+        let rangeSlider = document.getElementById("customRange2");
+
+        function getRandomColor() {
+            return "rgba("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+", 0.2)";
+        }
+
+        let values = {{ chartData['values']|tojson }};
+        let labels = {{ chartData['labels']|tojson }};
+        ctx = document.getElementById('chartID').getContext('2d');
+        firstChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels.slice(0,slider.value),
+                datasets: [{
+                    label: "{{ title }}",
+                    data: values.slice(0,slider.value),
+                    backgroundColor: [
+                        {% for color in range(0, chartData['values']|length) %}
+                            getRandomColor(),
+                        {% endfor %}
+                    ],
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                tooltips: {
+                    mode: 'nearest'
+                },
+                legend: {
+                    display: false,
+                    position: 'bottom',
+                }
+            }
+        });
+
+        let output = document.getElementById("count");
+        output.innerHTML = slider.value;
+
+        slider.oninput = function () {
+            firstChart.data.labels = labels.slice(0, this.value);
+            firstChart.data.datasets[0].data = values.slice(0, this.value);
+            firstChart.update();
+            output.innerHTML = this.value;
+            rangeSlider.setAttribute("max", {{ chartData['labels']|length }}-parseInt(this.value));
+        };
+
+        rangeSlider.oninput = function () {
+            firstChart.data.labels = labels.slice(this.value, parseInt(this.value) + parseInt(slider.value));
+            firstChart.data.datasets[0].data = values.slice(this.value, parseInt(this.value) + parseInt(slider.value));
+            firstChart.update();
+        };
+    </script>
+{% endblock %}

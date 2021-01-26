@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>{% block title %}{% endblock %} - PDI</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/simple-sidebar.css') }}">
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js'></script>
+    </head>
+    <body>
+        <div class="d-flex" id="wrapper">
+
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                    <h1>Processamento de Informação</h1>
+                </nav>
+                <div class="container mt-4">
+                    <section class="content">
+
+                        <nav>
+                            <h1><a href="{{ url_for('index') }}">Pesquisas</a></h1>
+                            <ul>
+                                <li><a href="{{ url_for('_chart1') }}">zonas com mais curriculos submitdos</a>
+                                <li><a href="{{ url_for('_chart2') }}">zonas com mais habilitações</a>
+                                <li><a href="{{ url_for('_chart3') }}">entidades que fazem mais formações</a>
+                                <li><a href="{{ url_for('_chart4') }}">áreas profissionais mais procuradas</a>
+                                <li><a href="{{ url_for('_chart5') }}">habilitações</a>
+                            </ul>
+                        </nav>
+                        <header>
+                            {% block header %}{% endblock %}
+                        </header>
+                        {% for message in get_flashed_messages() %}
+                            <div class="flash">{{ message }}</div>
+                        {% endfor %}
+                        {% block content %}{% endblock %}
+                    </section>
+                </div>
+
+            </div>
+            <!-- /#page-content-wrapper -->
+
+        </div>
+        <!-- /#wrapper -->
+
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

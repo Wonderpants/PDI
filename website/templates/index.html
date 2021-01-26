@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <title>{% block title %}Index{% endblock %}</title>
+    <ul>
+        <li>
+            <p>Tempo medio em dias que as pessoas trabalham nas empresas: {{ data.averageWorkTime['values'][0]|int }} dias</p>
+        </li>
+        <li>
+            <p>Média do numero de empresas em que as pessoas trabalharam : {{ data.averageCompanies['values'][0]|int }} empresas</p>
+        </li>
+    </ul>
+{% endblock %}
